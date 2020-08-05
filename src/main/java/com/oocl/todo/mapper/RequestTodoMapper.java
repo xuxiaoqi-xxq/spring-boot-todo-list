@@ -14,6 +14,8 @@ public class RequestTodoMapper {
     }
 
     public Todo to(TodoRequest todoRequest) {
-        return null;
+        Todo todo = new Todo();
+        BeanUtils.copyProperties(todoRequest, todo);
+        return todo;
     }
 }
