@@ -1,6 +1,7 @@
 package com.oocl.todo.mapper;
 
 import com.oocl.todo.dto.TodoRequest;
+import com.oocl.todo.dto.TodoResponse;
 import com.oocl.todo.model.Todo;
 import org.junit.jupiter.api.Test;
 
@@ -37,5 +38,20 @@ public class TodoMapperTest {
         assertEquals(1, todo.getId());
         assertEquals("todo content", todo.getContent());
         assertFalse(todo.getStatus());
+    }
+
+    @Test
+    void should_return_response_todo_when_from_response_given_todo() {
+        //given
+        TodoResponseMapper todoResponseMapper = new TodoResponseMapper();
+        Todo todo = new Todo(1, "todo content", false);
+
+        //when
+        TodoResponse todoResponse = todoResponseMapper.from(todo);
+
+        //then
+        assertEquals(1, todoResponse.getId());
+        assertEquals("todo content", todoResponse.getContent());
+        assertFalse(todoResponse.getStatus());
     }
 }
