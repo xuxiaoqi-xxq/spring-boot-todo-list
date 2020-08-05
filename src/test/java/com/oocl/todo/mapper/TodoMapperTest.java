@@ -23,4 +23,19 @@ public class TodoMapperTest {
         assertEquals("todo content", todoRequest.getContent());
         assertFalse(todoRequest.getStatus());
     }
+
+    @Test
+    void should_return_todo_when_to_todo_given_request_todo() {
+        //given
+        RequestTodoMapper requestTodoMapper = new RequestTodoMapper();
+        TodoRequest todoRequest = new TodoRequest(1, "todo content", false);
+
+        //when
+        Todo todo = requestTodoMapper.to(todoRequest);
+
+        //then
+        assertEquals(1, todo.getId());
+        assertEquals("todo content", todo.getContent());
+        assertFalse(todo.getStatus());
+    }
 }
