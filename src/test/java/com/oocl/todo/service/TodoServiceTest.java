@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -42,5 +43,19 @@ public class TodoServiceTest {
         assertEquals(repositoryTodo, savedTodo);
     }
 
+    @Test
+    void should_return_updated_todo_when_put_given_todo() {
+        //given
+        TodoRepository todoRepository = mock(TodoRepository.class);
+        Todo newTodo = new Todo(1, "todo content", true);
+        when(todoRepository.findById(1)).thenReturn(Optional.of(new Todo(1, "todo content", false)));
+        when(todoRepository.save(newTodo)).thenReturn(newTodo);
+        TodoService todoService = new TodoService(todoRepository);
 
+        //when
+        Todo updatedTodo = todoService.update(1, newTodo);
+
+        //then
+        assertEquals(newTodo, updatedTodo);
+    }
 }
