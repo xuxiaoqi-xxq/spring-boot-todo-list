@@ -9,8 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class TodoServiceTest {
     @Test
@@ -57,5 +56,18 @@ public class TodoServiceTest {
 
         //then
         assertEquals(newTodo, updatedTodo);
+    }
+
+    @Test
+    void should_return_void_todo_when_delete_given_todo_id() {
+        //given
+        TodoRepository todoRepository = mock(TodoRepository.class);
+        TodoService todoService = new TodoService(todoRepository);
+
+        //when
+        todoService.delete(1);
+
+        //then
+        verify(todoRepository).deleteById(1);
     }
 }
