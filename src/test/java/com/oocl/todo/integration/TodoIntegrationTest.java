@@ -2,6 +2,7 @@ package com.oocl.todo.integration;
 
 import com.oocl.todo.model.Todo;
 import com.oocl.todo.repository.TodoRepository;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -13,6 +14,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 
 import static java.util.Arrays.asList;
+import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -29,14 +31,21 @@ public class TodoIntegrationTest {
     @Autowired
     private TodoRepository todoRepository;
 
+    @AfterEach
+    void tearDown() {
+        todoRepository.deleteAll();
+    }
+
     @Test
     void should_return_all_todos_when_get_todo_endpoints_given_nothing() throws Exception {
         //given
-        List<Todo> todos = asList(new Todo(1, "todo1", false), new Todo(2, "todo2", false));
-        todoRepository.saveAll(todos);
+        Todo todo1 = new Todo(null, "todo1", false);
+        todoRepository.save(todo1);
+        Todo todo2 = new Todo(null, "todo2", false);
+        todoRepository.save(todo2);
 
         mockMvc.perform(get("/todos"))
-                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].id").isNumber())
                 .andExpect(jsonPath("$[0].content").value("todo1"))
                 .andExpect(jsonPath("$[0].status").value(false));
@@ -61,9 +70,9 @@ public class TodoIntegrationTest {
     void should_return_updated_todo_when_put_todo_endpoints_given_todo() throws Exception {
         //given
         Todo savedTodo = todoRepository.save(new Todo(1, "todo1", false));
-        String todo = "{\"id\":1,\"content\":\"todo1\",\"status\":true}";
+        String todo = "{\"id\":" + savedTodo.getId() + ",\"content\":\"todo1\",\"status\":true}";
 
-        mockMvc.perform(put("/todos" + savedTodo.getId()).contentType(MediaType.APPLICATION_JSON).content(todo))
+        mockMvc.perform(put("/todos/" + savedTodo.getId()).contentType(MediaType.APPLICATION_JSON).content(todo))
                 .andExpect(jsonPath("$.id").isNumber())
                 .andExpect(jsonPath("$.content").value("todo1"))
                 .andExpect(jsonPath("$.status").value(true));

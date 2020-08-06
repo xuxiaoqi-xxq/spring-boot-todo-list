@@ -36,4 +36,10 @@ public class TodoController {
         Todo todo = todoRequestMapper.to(todoRequest);
         return todoResponseMapper.from(todoService.add(todo));
     }
+
+    @PutMapping("/{id}")
+    public TodoResponse updateTodo(@PathVariable Integer id, @RequestBody TodoRequest todoRequest) {
+        Todo todo = todoRequestMapper.to(todoRequest);
+        return todoResponseMapper.from(todoService.update(id, todo));
+    }
 }
