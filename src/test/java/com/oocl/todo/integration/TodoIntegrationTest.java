@@ -24,12 +24,14 @@ public class TodoIntegrationTest {
     @Autowired
     private MockMvc mockMvc;
 
+    @Autowired
+    private TodoRepository todoRepository;
+
     @Test
     void should_return_all_todos_when_get_todo_endpoints_given_nothing() throws Exception {
         //given
-        TodoRepository todoRepository = mock(TodoRepository.class);
         List<Todo> todos = asList(new Todo(1, "todo1", false), new Todo(2, "todo2", false));
-        when(todoRepository.findAll()).thenReturn(todos);
+        todoRepository.saveAll(todos);
 
         mockMvc.perform(get("/todos"))
                 .andExpect(jsonPath("$.length()").value(2))
