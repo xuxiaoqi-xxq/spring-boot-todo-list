@@ -1,5 +1,6 @@
 package com.oocl.todo.service;
 
+import com.oocl.todo.exception.NoSuchDataException;
 import com.oocl.todo.model.Todo;
 import com.oocl.todo.repository.TodoRepository;
 import org.springframework.beans.BeanUtils;
@@ -23,12 +24,12 @@ public class TodoService {
         return todoRepository.save(todo);
     }
 
-    public Todo update(Integer id, Todo newTodo) {
+    public Todo update(Integer id, Todo newTodo) throws NoSuchDataException {
         Todo oldTodo = todoRepository.findById(id).orElse(null);
         if (oldTodo == null) {
-            return null;
+            throw new NoSuchDataException();
         }
-        BeanUtils.copyProperties(newTodo, oldTodo);
+        oldTodo.setStatus(newTodo.getStatus());
         return todoRepository.save(oldTodo);
     }
 

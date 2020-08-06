@@ -1,5 +1,6 @@
 package com.oocl.todo.service;
 
+import com.oocl.todo.exception.NoSuchDataException;
 import com.oocl.todo.model.Todo;
 import com.oocl.todo.repository.TodoRepository;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
 
 public class TodoServiceTest {
@@ -43,12 +45,11 @@ public class TodoServiceTest {
     }
 
     @Test
-    void should_return_updated_todo_when_put_given_todo() {
+    void should_return_updated_todo_when_put_given_todo() throws NoSuchDataException {
         //given
         TodoRepository todoRepository = mock(TodoRepository.class);
         Todo newTodo = new Todo(1, "todo content", true);
         when(todoRepository.findById(1)).thenReturn(Optional.of(new Todo(1, "todo content", false)));
-        when(todoRepository.save(newTodo)).thenReturn(newTodo);
         TodoService todoService = new TodoService(todoRepository);
 
         //when
@@ -69,5 +70,15 @@ public class TodoServiceTest {
 
         //then
         verify(todoRepository).deleteById(1);
+    }
+
+    @Test
+    void should_throw_no_such_data_exception_when_update_given_todo_id() throws NoSuchDataException {
+        //given
+        TodoRepository todoRepository = mock(TodoRepository.class);
+        when(todoRepository.findById(1)).thenReturn(Optional.empty());
+        TodoService todoService = new TodoService(todoRepository);
+
+        assertThrows(NoSuchDataException.class, () -> todoService.update(1, null));
     }
 }

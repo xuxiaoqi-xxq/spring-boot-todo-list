@@ -2,6 +2,7 @@ package com.oocl.todo.controller;
 
 import com.oocl.todo.dto.TodoRequest;
 import com.oocl.todo.dto.TodoResponse;
+import com.oocl.todo.exception.NoSuchDataException;
 import com.oocl.todo.mapper.RequestTodoMapper;
 import com.oocl.todo.mapper.TodoResponseMapper;
 import com.oocl.todo.model.Todo;
@@ -39,7 +40,7 @@ public class TodoController {
     }
 
     @PutMapping("/{id}")
-    public TodoResponse updateTodo(@PathVariable Integer id, @RequestBody TodoRequest todoRequest) {
+    public TodoResponse updateTodo(@PathVariable Integer id, @RequestBody TodoRequest todoRequest) throws NoSuchDataException {
         Todo todo = todoRequestMapper.to(todoRequest);
         return todoResponseMapper.from(todoService.update(id, todo));
     }
