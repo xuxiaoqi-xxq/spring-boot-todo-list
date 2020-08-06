@@ -42,4 +42,9 @@ public class TodoController {
         Todo todo = todoRequestMapper.to(todoRequest);
         return todoResponseMapper.from(todoService.update(id, todo));
     }
+
+    @DeleteMapping("/{id}")
+    public void deleteTodo(@PathVariable Integer id) {
+        todoService.delete(id);
+    }
 }
