@@ -54,4 +54,19 @@ public class TodoMapperTest {
         assertEquals("todo content", todoResponse.getContent());
         assertFalse(todoResponse.getStatus());
     }
+
+    @Test
+    void should_return_todo_when_to_todo_given_esponse_todo() {
+        //given
+        TodoResponseMapper todoResponseMapper = new TodoResponseMapper();
+        TodoResponse todoResponse = new TodoResponse(1, "todo content", false);
+
+        //when
+        Todo todo = todoResponseMapper.to(todoResponse);
+
+        //then
+        assertEquals(1, todo.getId());
+        assertEquals("todo content", todo.getContent());
+        assertFalse(todo.getStatus());
+    }
 }
