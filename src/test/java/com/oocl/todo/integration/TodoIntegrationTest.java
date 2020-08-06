@@ -20,6 +20,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -80,5 +81,17 @@ public class TodoIntegrationTest {
         Todo repositoryTodo = todoRepository.findById(savedTodo.getId()).orElse(null);
         assertEquals("todo1", repositoryTodo.getContent());
         assertTrue(repositoryTodo.getStatus());
+    }
+
+    @Test
+    void should_return_nothing_when_delete_todo_endpoints_given_todo_id() throws Exception {
+        //given
+        Todo savedTodo = todoRepository.save(new Todo(null, "todo1", false));
+
+        mockMvc.perform(delete("/todos/" + savedTodo.getId()))
+                .andExpect(status().isOk());
+
+        Todo repositoryTodo = todoRepository.findById(savedTodo.getId()).orElse(null);
+        assertNull(repositoryTodo);
     }
 }
