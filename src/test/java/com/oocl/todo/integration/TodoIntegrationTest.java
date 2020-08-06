@@ -46,6 +46,7 @@ public class TodoIntegrationTest {
         todoRepository.save(todo2);
 
         mockMvc.perform(get("/todos"))
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))
                 .andExpect(jsonPath("$[0].id").isNumber())
                 .andExpect(jsonPath("$[0].content").value("todo1"))
@@ -58,6 +59,7 @@ public class TodoIntegrationTest {
         String todo = "{\"id\":1,\"content\":\"todo1\",\"status\":false}";
 
         mockMvc.perform(post("/todos").contentType(MediaType.APPLICATION_JSON).content(todo))
+                .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id").isNumber())
                 .andExpect(jsonPath("$.content").value("todo1"))
                 .andExpect(jsonPath("$.status").value(false));
@@ -74,6 +76,7 @@ public class TodoIntegrationTest {
         String todo = "{\"id\":" + savedTodo.getId() + ",\"content\":\"todo1\",\"status\":true}";
 
         mockMvc.perform(put("/todos/" + savedTodo.getId()).contentType(MediaType.APPLICATION_JSON).content(todo))
+                .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").isNumber())
                 .andExpect(jsonPath("$.content").value("todo1"))
                 .andExpect(jsonPath("$.status").value(true));
