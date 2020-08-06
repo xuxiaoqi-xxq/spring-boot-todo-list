@@ -13,8 +13,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -55,6 +54,22 @@ public class TodoIntegrationTest {
 
         Todo savedTodo = todoRepository.findAll().get(0);
         assertEquals("todo1", savedTodo.getContent());
-        assertFalse(false);
+        assertFalse(savedTodo.getStatus());
+    }
+
+    @Test
+    void should_return_updated_todo_when_put_todo_endpoints_given_todo() throws Exception {
+        //given
+        Todo savedTodo = todoRepository.save(new Todo(1, "todo1", false));
+        String todo = "{\"id\":1,\"content\":\"todo1\",\"status\":true}";
+
+        mockMvc.perform(put("/todos" + savedTodo.getId()).contentType(MediaType.APPLICATION_JSON).content(todo))
+                .andExpect(jsonPath("$.id").isNumber())
+                .andExpect(jsonPath("$.content").value("todo1"))
+                .andExpect(jsonPath("$.status").value(true));
+
+        Todo repositoryTodo = todoRepository.findById(savedTodo.getId()).orElse(null);
+        assertEquals("todo1", repositoryTodo.getContent());
+        assertTrue(repositoryTodo.getStatus());
     }
 }
