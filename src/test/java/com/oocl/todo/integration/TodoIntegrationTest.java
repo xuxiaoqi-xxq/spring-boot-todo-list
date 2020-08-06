@@ -7,11 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.web.JsonPath;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
 
 import static java.util.Arrays.asList;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -41,13 +44,17 @@ public class TodoIntegrationTest {
     }
 
     @Test
-    void should_return_specific_todo_when_get_todo_endpoints_given_todo_id() throws Exception {
+    void should_return_created_todo_when_post_todo_endpoints_given_todo() throws Exception {
         //given
-        Todo savedTodo = todoRepository.save(new Todo(1, "todo1", false));
+        String todo = "{\"id\":1,\"content\":\"todo1\",\"status\":false}";
 
-        mockMvc.perform(get("/todos" + savedTodo.getId()))
-                .andExpect(jsonPath("$.id").value(savedTodo.getId()))
+        mockMvc.perform(post("/todos").contentType(MediaType.APPLICATION_JSON).content(todo))
+                .andExpect(jsonPath("$.id").isNumber())
                 .andExpect(jsonPath("$.content").value("todo1"))
                 .andExpect(jsonPath("$.status").value(false));
+
+        Todo savedTodo = todoRepository.findAll().get(0);
+        assertEquals("todo1", savedTodo.getContent());
+        assertFalse(false);
     }
 }
