@@ -39,4 +39,15 @@ public class TodoIntegrationTest {
                 .andExpect(jsonPath("$[0].content").value("todo1"))
                 .andExpect(jsonPath("$[0].status").value(false));
     }
+
+    @Test
+    void should_return_specific_todo_when_get_todo_endpoints_given_todo_id() throws Exception {
+        //given
+        Todo savedTodo = todoRepository.save(new Todo(1, "todo1", false));
+
+        mockMvc.perform(get("/todos" + savedTodo.getId()))
+                .andExpect(jsonPath("$.id").value(savedTodo.getId()))
+                .andExpect(jsonPath("$.content").value("todo1"))
+                .andExpect(jsonPath("$.status").value(false));
+    }
 }
