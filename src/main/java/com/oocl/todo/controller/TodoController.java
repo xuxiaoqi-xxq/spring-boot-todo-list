@@ -3,6 +3,7 @@ package com.oocl.todo.controller;
 import com.oocl.todo.dto.TodoRequest;
 import com.oocl.todo.dto.TodoResponse;
 import com.oocl.todo.exception.NoSuchDataException;
+import com.oocl.todo.exception.ParameterException;
 import com.oocl.todo.mapper.RequestTodoMapper;
 import com.oocl.todo.mapper.TodoResponseMapper;
 import com.oocl.todo.model.Todo;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static com.oocl.todo.utils.ObjectUtil.isTodoEmpty;
 
 @RestController
 @RequestMapping("/todos")
@@ -34,7 +37,10 @@ public class TodoController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public TodoResponse addTodo(@RequestBody TodoRequest todoRequest) {
+    public TodoResponse addTodo(@RequestBody TodoRequest todoRequest) throws ParameterException {
+        if(isTodoEmpty(todoRequest)) {
+            throw new ParameterException();
+        }
         Todo todo = todoRequestMapper.to(todoRequest);
         return todoResponseMapper.from(todoService.add(todo));
     }
@@ -46,7 +52,10 @@ public class TodoController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteTodo(@PathVariable Integer id) {
+    public void deleteTodo(@PathVariable Integer id) throws ParameterException {
+        if (id == null) {
+            throw new ParameterException();
+        }
         todoService.delete(id);
     }
 }

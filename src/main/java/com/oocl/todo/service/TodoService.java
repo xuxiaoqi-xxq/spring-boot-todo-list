@@ -3,7 +3,6 @@ package com.oocl.todo.service;
 import com.oocl.todo.exception.NoSuchDataException;
 import com.oocl.todo.model.Todo;
 import com.oocl.todo.repository.TodoRepository;
-import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
