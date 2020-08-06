@@ -25,7 +25,7 @@ public class TodoService {
 
     public Todo update(Integer id, Todo newTodo) {
         Todo oldTodo = todoRepository.findById(id).orElse(null);
-        if(oldTodo == null) {
+        if (oldTodo == null) {
             return null;
         }
         BeanUtils.copyProperties(newTodo, oldTodo);
