@@ -50,6 +50,7 @@ public class TodoServiceTest {
         TodoRepository todoRepository = mock(TodoRepository.class);
         Todo newTodo = new Todo(1, "todo content", true);
         when(todoRepository.findById(1)).thenReturn(Optional.of(new Todo(1, "todo content", false)));
+        when(todoRepository.save(any())).thenReturn(newTodo);
         TodoService todoService = new TodoService(todoRepository);
 
         //when
